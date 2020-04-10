@@ -413,15 +413,16 @@ func (s *SearchService) Do(ctx context.Context) (*SearchResult, error) {
 
 // SearchResult is the result of a search in Elasticsearch.
 type SearchResult struct {
-	TookInMillis int64          `json:"took"`              // search time in milliseconds
-	ScrollId     string         `json:"_scroll_id"`        // only used with Scroll operations
-	Hits         *SearchHits    `json:"hits"`              // the actual search hits
-	Suggest      SearchSuggest  `json:"suggest"`           // results from suggesters
-	Aggregations Aggregations   `json:"aggregations"`      // results from aggregations
-	TimedOut     bool           `json:"timed_out"`         // true if the search timed out
-	Error        *ErrorDetails  `json:"error,omitempty"`   // only used in MultiGet
-	Profile      *SearchProfile `json:"profile,omitempty"` // profiling results, if optional Profile API was active for this search
-	Shards       *shardsInfo    `json:"_shards,omitempty"` // shard information
+	TookInMillis int64          `json:"took"`                    // search time in milliseconds
+	ScrollId     string         `json:"_scroll_id"`              // only used with Scroll operations
+	Hits         *SearchHits    `json:"hits"`                    // the actual search hits
+	Suggest      SearchSuggest  `json:"suggest"`                 // results from suggesters
+	Aggregations Aggregations   `json:"aggregations"`            // results from aggregations
+	TimedOut     bool           `json:"timed_out"`               // true if the search timed out
+	Error        *ErrorDetails  `json:"error,omitempty"`         // only used in MultiGet
+	Profile      *SearchProfile `json:"profile,omitempty"`       // profiling results, if optional Profile API was active for this search
+	Shards       *shardsInfo    `json:"_shards,omitempty"`       // shard information
+	RescorerInfo *RescorerInfo  `json:"rescorer_info,omitempty"` // arbitrary return result from rescorer
 }
 
 // TotalHits is a convenience function to return the number of hits for
@@ -577,6 +578,15 @@ type ProfileResult struct {
 	NodeTimeNanos int64            `json:"time_in_nanos,omitempty"`
 	Breakdown     map[string]int64 `json:"breakdown,omitempty"`
 	Children      []ProfileResult  `json:"children,omitempty"`
+}
+
+type RescorerInfo struct {
+	Shards []RescorerShardResult `json:"shards"`
+}
+
+type RescorerShardResult struct {
+	ID      string `json:"id"`
+	Payload string `json:"payload"`
 }
 
 // Aggregations (see search_aggs.go)
