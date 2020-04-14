@@ -645,16 +645,17 @@ type SearchResult struct {
 	TookInMillis    int64                  `json:"took,omitempty"`             // search time in milliseconds
 	TerminatedEarly bool                   `json:"terminated_early,omitempty"` // request terminated early
 	NumReducePhases int                    `json:"num_reduce_phases,omitempty"`
-	Clusters        []*SearchResultCluster `json:"_clusters,omitempty"`    // 6.1.0+
-	ScrollId        string                 `json:"_scroll_id,omitempty"`   // only used with Scroll and Scan operations
-	Hits            *SearchHits            `json:"hits,omitempty"`         // the actual search hits
-	Suggest         SearchSuggest          `json:"suggest,omitempty"`      // results from suggesters
-	Aggregations    Aggregations           `json:"aggregations,omitempty"` // results from aggregations
-	TimedOut        bool                   `json:"timed_out,omitempty"`    // true if the search timed out
-	Error           *ErrorDetails          `json:"error,omitempty"`        // only used in MultiGet
-	Profile         *SearchProfile         `json:"profile,omitempty"`      // profiling results, if optional Profile API was active for this search
-	Shards          *ShardsInfo            `json:"_shards,omitempty"`      // shard information
-	Status          int                    `json:"status,omitempty"`       // used in MultiSearch
+	Clusters        []*SearchResultCluster `json:"_clusters,omitempty"`     // 6.1.0+
+	ScrollId        string                 `json:"_scroll_id,omitempty"`    // only used with Scroll and Scan operations
+	Hits            *SearchHits            `json:"hits,omitempty"`          // the actual search hits
+	Suggest         SearchSuggest          `json:"suggest,omitempty"`       // results from suggesters
+	Aggregations    Aggregations           `json:"aggregations,omitempty"`  // results from aggregations
+	TimedOut        bool                   `json:"timed_out,omitempty"`     // true if the search timed out
+	Error           *ErrorDetails          `json:"error,omitempty"`         // only used in MultiGet
+	Profile         *SearchProfile         `json:"profile,omitempty"`       // profiling results, if optional Profile API was active for this search
+	Shards          *ShardsInfo            `json:"_shards,omitempty"`       // shard information
+	Status          int                    `json:"status,omitempty"`        // used in MultiSearch
+	RescorerInfo    *RescorerInfo          `json:"rescorer_info,omitempty"` // arbitrary return result from rescorer
 }
 
 // SearchResultCluster holds information about a search response
@@ -832,6 +833,15 @@ type ProfileResult struct {
 	NodeTimeNanos int64            `json:"time_in_nanos,omitempty"`
 	Breakdown     map[string]int64 `json:"breakdown,omitempty"`
 	Children      []ProfileResult  `json:"children,omitempty"`
+}
+
+type RescorerInfo struct {
+	Shards []RescorerShardResult `json:"shards"`
+}
+
+type RescorerShardResult struct {
+	ID      string `json:"id"`
+	Payload string `json:"payload"`
 }
 
 // Aggregations (see search_aggs.go)
